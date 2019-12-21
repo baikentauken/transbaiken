@@ -10,7 +10,7 @@ from gtts import gTTS
 
 
 bot=telebot.TeleBot(config.TOKEN)#активируем бота
-server = flask.Flask(name)
+server = flask.Flask(__name__)
 @bot.message_handler(commands=['start'])#реагируем на команду старт
 def start(message):
           keyboard=types.ReplyKeyboardMarkup(row_width=2,resize_keyboard=True)
