@@ -1,3 +1,5 @@
+import flask
+import os.path
 import telebot
 from telebot import types
 import config
@@ -8,6 +10,7 @@ from gtts import gTTS
 
 
 bot=telebot.TeleBot(config.token)#активируем бота
+server = flask.Flask(name)
 @bot.message_handler(commands=['start'])#реагируем на команду старт
 def start(message):
           keyboard=types.ReplyKeyboardMarkup(row_width=2,resize_keyboard=True)
@@ -92,6 +95,20 @@ def url(message):
                     bot.send_message(message.chat.id,'привет это аккаунт создателя',reply_markup=keyboard)
                     
 
-bot.polling(none_stop=True)
+@server.route('/' + config.TOKEN, methods=['POST'])
+def get_message():
+     bot.process_new_updates([types.Update.de_json(flask.request.stream.read().decode("utf-8"))])
+     return "!", 200
 
-
+@server.route('/', methods=["GET"])
+def index():
+     print("hello webhook!")
+     bot.remove_webhook()
+     bot.set_webhook(url=f"https://{config.APP_NAME}.herokuapp.com/{config.TOKEN}")
+     return "Hello from Heroku!", 200
+     
+print(f"https://{config.APP_NAME}.herokuapp.com/{config.TOKEN}")
+print(f"PORT: {int(os.environ.get('PORT', 5000))}")
+if __name__ == "__main__":
+     print("started")
+     server.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
