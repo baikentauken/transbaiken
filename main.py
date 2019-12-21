@@ -9,7 +9,7 @@ from gtts import gTTS
 
 
 
-bot=telebot.TeleBot(config.token)#активируем бота
+bot=telebot.TeleBot(config.TOKEN)#активируем бота
 server = flask.Flask(name)
 @bot.message_handler(commands=['start'])#реагируем на команду старт
 def start(message):
